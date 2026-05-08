@@ -1,0 +1,64 @@
+{
+  "demo_name": "健康服务数据治理与运营分析展示台",
+  "contract_version": "v1",
+  "generated_at": "2026-05-08T12:20:17Z",
+  "data_range_start": "2026-02-03",
+  "data_range_end": "2026-04-30",
+  "source_files": [
+    "service_records.csv",
+    "service_types.csv",
+    "organizations.csv",
+    "medical_resources.csv",
+    "staff_users.csv",
+    "payment_records.csv",
+    "medical_notes.csv",
+    "pending_notes.csv"
+  ],
+  "allowed_fields": [
+    "service_record_id",
+    "appointment_date",
+    "service_type",
+    "service_status_label",
+    "customer_source_label",
+    "hospital_name",
+    "department_name",
+    "guide_staff_label",
+    "is_cancelled",
+    "has_payment_note",
+    "has_medical_note",
+    "has_follow_up"
+  ],
+  "prohibited_fields": [
+    "真实姓名",
+    "手机号",
+    "证件号",
+    "诊疗卡号",
+    "medical_notes 原文",
+    "诊疗过程",
+    "医嘱",
+    "病历检查报告",
+    "raw_payment_note",
+    "客户备注原文",
+    "内部敏感备注",
+    "note_text",
+    "diagnosis",
+    "doctor_advice",
+    "report",
+    "payment raw text",
+    "任何可识别个人身份或医疗原文的字段"
+  ],
+  "semantic_boundaries": [
+    "has_payment_note 只能解释为存在费用/支付归属信息，不能推断支付状态。",
+    "is_cancelled=false 只能解释为未取消服务记录，不能推断诊疗结果。",
+    "payment_records 不能推断支付状态。",
+    "未取消服务记录不能推断诊疗结果。",
+    "图表口径均为服务记录统计，不是医疗结论。"
+  ],
+  "demo_boundaries": [
+    "React 第一版只消费 frontend/public/demo-data/*.json。",
+    "第一版不接 Supabase，不使用 Supabase client，不读取 Supabase env 或 key。",
+    "第一版不接后端、不做登录、不使用 Workers/R2/Resend/Neon。",
+    "当前不是生产系统，不用于诊疗判断，也不是正式权限系统。",
+    "JSON 由本地 data/processed/*.csv 或已有安全导出文件生成。"
+  ]
+}

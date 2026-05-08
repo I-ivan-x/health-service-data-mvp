@@ -1,0 +1,208 @@
+{
+  "service_type_distribution": [
+    {
+      "label": "专家门诊预约",
+      "count": 37
+    },
+    {
+      "label": "线上咨询服务",
+      "count": 29
+    },
+    {
+      "label": "检查绿色通道",
+      "count": 9
+    },
+    {
+      "label": "心理咨询预约",
+      "count": 6
+    },
+    {
+      "label": "健康科普活动",
+      "count": 6
+    },
+    {
+      "label": "住院手术协助",
+      "count": 5
+    },
+    {
+      "label": "检查陪同导诊",
+      "count": 3
+    },
+    {
+      "label": "服务类型待确认",
+      "count": 3
+    },
+    {
+      "label": "用药协助服务",
+      "count": 1
+    },
+    {
+      "label": "综合协助服务",
+      "count": 1
+    }
+  ],
+  "customer_source_distribution": [
+    {
+      "label": "企业客户",
+      "count": 81
+    },
+    {
+      "label": "个人客户",
+      "count": 14
+    },
+    {
+      "label": "员工家属",
+      "count": 4
+    },
+    {
+      "label": "来源待确认",
+      "count": 1
+    }
+  ],
+  "monthly_service_trend": [
+    {
+      "month": "2026-02",
+      "total_service_records": 30,
+      "uncancelled_service_records": 28,
+      "cancelled_service_records": 2
+    },
+    {
+      "month": "2026-03",
+      "total_service_records": 36,
+      "uncancelled_service_records": 34,
+      "cancelled_service_records": 2
+    },
+    {
+      "month": "2026-04",
+      "total_service_records": 34,
+      "uncancelled_service_records": 33,
+      "cancelled_service_records": 1
+    }
+  ],
+  "hospital_top10": [
+    {
+      "label": "中山大学附属第一医院",
+      "count": 27
+    },
+    {
+      "label": "中山大学附属第三医院",
+      "count": 21
+    },
+    {
+      "label": "广东省中医院",
+      "count": 18
+    },
+    {
+      "label": "中山大学附属肿瘤医院",
+      "count": 11
+    },
+    {
+      "label": "心理咨询合作机构",
+      "count": 6
+    },
+    {
+      "label": "中山大学光华口腔医院",
+      "count": 3
+    },
+    {
+      "label": "中山大学中山眼科医院",
+      "count": 2
+    },
+    {
+      "label": "医院待确认",
+      "count": 2
+    },
+    {
+      "label": "中国人民解放军南部战区总医院",
+      "count": 2
+    },
+    {
+      "label": "南方医科大学珠江医院",
+      "count": 2
+    }
+  ],
+  "department_top10": [
+    {
+      "label": "胸外科",
+      "count": 11
+    },
+    {
+      "label": "心内科",
+      "count": 6
+    },
+    {
+      "label": "消化内科",
+      "count": 5
+    },
+    {
+      "label": "心理科",
+      "count": 5
+    },
+    {
+      "label": "超声科",
+      "count": 4
+    },
+    {
+      "label": "内分泌科",
+      "count": 4
+    },
+    {
+      "label": "泌尿外科",
+      "count": 4
+    },
+    {
+      "label": "口腔科",
+      "count": 4
+    },
+    {
+      "label": "科室待确认",
+      "count": 4
+    },
+    {
+      "label": "脑病科",
+      "count": 4
+    }
+  ],
+  "guide_staff_workload": [
+    {
+      "label": "待确认",
+      "count": 40
+    },
+    {
+      "label": "导诊顾问 01",
+      "count": 16
+    },
+    {
+      "label": "导诊顾问 04",
+      "count": 10
+    },
+    {
+      "label": "导诊顾问 09",
+      "count": 9
+    },
+    {
+      "label": "导诊顾问 08",
+      "count": 7
+    },
+    {
+      "label": "导诊顾问 10",
+      "count": 6
+    },
+    {
+      "label": "导诊顾问 06",
+      "count": 5
+    },
+    {
+      "label": "导诊顾问 02",
+      "count": 2
+    },
+    {
+      "label": "导诊顾问 11",
+      "count": 2
+    },
+    {
+      "label": "导诊顾问 03",
+      "count": 1
+    }
+  ]
+}

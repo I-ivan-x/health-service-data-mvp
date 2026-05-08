@@ -1,0 +1,10 @@
+{
+  "data_range_start": "2026-02-03",
+  "data_range_end": "2026-04-30",
+  "total_service_records": 100,
+  "uncancelled_service_records": 95,
+  "cancelled_service_records": 5,
+  "records_with_payment_note": 90,
+  "records_with_medical_note": 67,
+  "follow_up_records": 25
+}
