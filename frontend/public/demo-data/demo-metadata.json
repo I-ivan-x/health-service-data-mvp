@@ -58,7 +58,7 @@
     "React 第一版只消费 frontend/public/demo-data/*.json。",
     "第一版不接 Supabase，不使用 Supabase client，不读取 Supabase env 或 key。",
     "第一版不接后端、不做登录、不使用 Workers/R2/Resend/Neon。",
-    "当前不是生产系统，不用于诊疗判断，也不是正式权限系统。",
+    "当前不是运行中的业务系统，不用于诊疗判断，也不是正式权限系统。",
     "JSON 由本地 data/processed/*.csv 或已有安全导出文件生成。"
   ]
 }

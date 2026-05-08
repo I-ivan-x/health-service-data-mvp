@@ -322,9 +322,15 @@ function OverviewPage({ data }: { data: DemoData }) {
     <div className="space-y-6">
       <PageIntro
         eyebrow="需求方展示层"
-        title="静态脱敏数据驱动的产品化展示原型"
-        description="本 Demo 展示从 Excel 大宽表到结构化数据、BI/后台验证，再到 React 展示层的治理链路。当前不是正式系统，不接 Supabase，不做登录或后端。"
+        title="从 Excel 大宽表到健康服务运营分析展示台"
+        description="展示数据治理、BI/后台验证到 React 展示层的链路；当前为静态脱敏 Demo，不连接生产数据库，不展示敏感原文。"
       />
+
+      <div className="value-strip" aria-label="展示台价值点">
+        {["可查询", "可统计", "可演示", "可扩展"].map((item) => (
+          <span key={item}>{item}</span>
+        ))}
+      </div>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {kpiCards.map((card) => (
@@ -422,7 +428,7 @@ function AnalyticsPage({ data }: { data: DemoData }) {
         title="基于服务记录统计的分布与趋势"
         description="所有图表仅表达服务记录统计口径，不代表医疗结论，也不能推断支付状态或诊疗结果。"
       />
-      <div className="grid gap-6 xl:grid-cols-2">
+      <AnalysisGroup title="服务结构" description="服务类型与客户来源的结构化分布。">
         <ChartCard
           title="服务类型分布"
           description="按服务记录统计"
@@ -433,6 +439,9 @@ function AnalyticsPage({ data }: { data: DemoData }) {
           description="按服务记录统计"
           option={donutOption(analytics.customer_source_distribution)}
         />
+      </AnalysisGroup>
+
+      <AnalysisGroup title="运营资源" description="趋势、人员、医院与科室维度的服务记录统计。">
         <ChartCard
           title="月度服务趋势"
           description="未取消服务记录不能推断诊疗结果"
@@ -453,7 +462,7 @@ function AnalyticsPage({ data }: { data: DemoData }) {
           description="按服务记录统计"
           option={barOption(analytics.department_top10, "服务记录数", true)}
         />
-      </div>
+      </AnalysisGroup>
     </div>
   );
 }
@@ -485,7 +494,11 @@ function RecordsPage({ records }: { records: ServiceRecord[] }) {
         cell: ({ getValue }) => displayValue(getValue<string | null>()),
       },
       { accessorKey: "service_type", header: "服务类型" },
-      { accessorKey: "service_status_label", header: "服务状态" },
+      {
+        accessorKey: "service_status_label",
+        header: "服务状态",
+        cell: ({ getValue }) => <StatusBadge label={getValue<string>()} />,
+      },
       { accessorKey: "customer_source_label", header: "客户来源" },
       { accessorKey: "hospital_name", header: "医院" },
       { accessorKey: "department_name", header: "科室" },
@@ -586,12 +599,12 @@ function RecordsPage({ records }: { records: ServiceRecord[] }) {
           <div>
             <h2 className="text-base font-semibold">服务记录列表</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              当前筛选结果 {formatNumber(table.getFilteredRowModel().rows.length)} 条
+              当前筛选结果 {formatNumber(table.getFilteredRowModel().rows.length)} 条；表格字段来自静态 JSON 合同
             </p>
           </div>
-          <div className="inline-flex items-center gap-2 rounded-md bg-muted px-3 py-2 text-xs text-muted-foreground">
+          <div className="contract-note">
             <ListFilter className="h-4 w-4" aria-hidden="true" />
-            表格字段来自静态 JSON 合同
+            移动端可横向滑动查看完整字段
           </div>
         </div>
 
@@ -662,12 +675,14 @@ function RecordsPage({ records }: { records: ServiceRecord[] }) {
 }
 
 function SecurityRoadmapPage({ metadata }: { metadata: DemoMetadata }) {
+  const prohibitedGroups = groupProhibitedFields(metadata.prohibited_fields);
+
   return (
     <div className="space-y-6">
       <PageIntro
         eyebrow="数据安全与后续路线"
         title="脱敏字段、禁止字段和 Demo 边界"
-        description="当前展示台是静态脱敏 Demo，不是生产系统，不用于诊疗判断，也不是正式权限系统。"
+        description="当前展示台是静态脱敏 Demo，不是运行中的业务系统，不用于诊疗判断，也不是正式权限系统。"
       />
 
       <section className="grid gap-6 lg:grid-cols-2">
@@ -683,13 +698,41 @@ function SecurityRoadmapPage({ metadata }: { metadata: DemoMetadata }) {
         </div>
         <div className="panel">
           <SectionTitle icon={CircleAlert} title="禁止展示字段" description="禁止进入静态 JSON 和详情抽屉。" />
-          <div className="mt-5 grid gap-2 sm:grid-cols-2">
-            {metadata.prohibited_fields.map((field) => (
-              <div key={field} className="danger-row">
-                {field}
+          <div className="mt-5 space-y-4">
+            {prohibitedGroups.map((group) => (
+              <div key={group.title} className="security-group">
+                <h3>{group.title}</h3>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {group.items.map((field) => (
+                    <span key={field} className="danger-chip">
+                      {field}
+                    </span>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="panel">
+        <SectionTitle
+          icon={ShieldCheck}
+          title="安全展示流程"
+          description="从本地材料到前端展示，所有步骤都围绕 allowlist 和敏感字段检查展开。"
+        />
+        <div className="mt-6 grid gap-3 md:grid-cols-4">
+          {[
+            "本地 CSV / 安全导出",
+            "allowlist 生成 JSON",
+            "敏感字段检查",
+            "React 只读展示",
+          ].map((step, index) => (
+            <div key={step} className="security-flow-step">
+              <span>{index + 1}</span>
+              <strong>{step}</strong>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -786,6 +829,29 @@ function KpiCard({
   );
 }
 
+function AnalysisGroup({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="analysis-group">
+      <div className="analysis-group-header">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Analysis</p>
+          <h2>{title}</h2>
+        </div>
+        <p>{description}</p>
+      </div>
+      <div className="grid gap-6 xl:grid-cols-2">{children}</div>
+    </section>
+  );
+}
+
 function ChartCard({
   title,
   description,
@@ -796,7 +862,7 @@ function ChartCard({
   option: EChartsOption;
 }) {
   return (
-    <section className="panel">
+    <section className="panel chart-card">
       <div className="mb-4 flex items-start justify-between gap-4">
         <div>
           <h2 className="text-base font-semibold">{title}</h2>
@@ -804,6 +870,7 @@ function ChartCard({
         </div>
       </div>
       <ReactECharts option={option} notMerge lazyUpdate className="h-80 w-full" />
+      <p className="chart-footnote">按服务记录统计，不代表医疗结论。</p>
     </section>
   );
 }
@@ -818,13 +885,17 @@ function barOption(items: CountItem[], seriesName: string, horizontal = false): 
       axisPointer: { type: "shadow" },
       valueFormatter: (value) => `${value} 条服务记录`,
     },
-    grid: { left: horizontal ? 128 : 42, right: 24, top: 20, bottom: 34 },
+    grid: { left: horizontal ? 154 : 46, right: 24, top: 22, bottom: horizontal ? 30 : 44 },
     xAxis: horizontal
-      ? { type: "value", axisLabel: { color: "#64726f" }, splitLine: { lineStyle: { color: "#e6ece9" } } }
-      : { type: "category", data: labels, axisLabel: { color: "#64726f", rotate: 30 } },
+      ? { type: "value", axisLabel: { color: "#64726f", fontSize: 12 }, splitLine: { lineStyle: { color: "#e6ece9" } } }
+      : { type: "category", data: labels, axisLabel: { color: "#64726f", rotate: 28, fontSize: 12 } },
     yAxis: horizontal
-      ? { type: "category", data: labels, axisLabel: { color: "#34423f" } }
-      : { type: "value", axisLabel: { color: "#64726f" }, splitLine: { lineStyle: { color: "#e6ece9" } } },
+      ? {
+          type: "category",
+          data: labels,
+          axisLabel: { color: "#34423f", fontSize: 12, width: 132, overflow: "truncate" },
+        }
+      : { type: "value", axisLabel: { color: "#64726f", fontSize: 12 }, splitLine: { lineStyle: { color: "#e6ece9" } } },
     series: [
       {
         name: seriesName,
@@ -847,7 +918,8 @@ function donutOption(items: CountItem[]): EChartsOption {
     },
     legend: {
       bottom: 0,
-      textStyle: { color: "#53625f" },
+      type: "scroll",
+      textStyle: { color: "#53625f", fontSize: 12 },
     },
     series: [
       {
@@ -866,7 +938,7 @@ function trendOption(items: MonthlyTrendItem[]): EChartsOption {
   return {
     color: ["#247c74", "#4b8cbd", "#d8a23a"],
     tooltip: { trigger: "axis" },
-    legend: { top: 0, textStyle: { color: "#53625f" } },
+    legend: { top: 0, type: "scroll", textStyle: { color: "#53625f", fontSize: 12 } },
     grid: { left: 42, right: 24, top: 48, bottom: 34 },
     xAxis: {
       type: "category",
@@ -934,6 +1006,15 @@ function FlagBadge({ active }: { active: boolean }) {
   return <span className={active ? "flag-badge flag-active" : "flag-badge"}>{active ? "存在" : "无标记"}</span>;
 }
 
+function StatusBadge({ label }: { label: string }) {
+  const isCancelled = label.includes("取消");
+  return (
+    <span className={isCancelled ? "status-badge status-cancelled" : "status-badge status-open"}>
+      {displayValue(label)}
+    </span>
+  );
+}
+
 function RecordDrawer({
   record,
   onOpenChange,
@@ -948,7 +1029,9 @@ function RecordDrawer({
         <Dialog.Content className="dialog-content">
           <div className="flex items-start justify-between gap-4 border-b border-border p-5">
             <div>
-              <Dialog.Title className="text-lg font-semibold">服务记录详情</Dialog.Title>
+              <Dialog.Title className="text-lg font-semibold">
+                {record ? `${record.service_record_id} · ${record.service_type}` : "服务记录详情"}
+              </Dialog.Title>
               <Dialog.Description className="mt-1 text-sm text-muted-foreground">
                 仅展示合同允许字段和 flags，不展示任何敏感原文。
               </Dialog.Description>
@@ -1002,4 +1085,39 @@ function uniqueValues<T extends keyof ServiceRecord>(records: ServiceRecord[], k
   return Array.from(new Set(records.map((record) => String(record[key])))).sort((a, b) =>
     a.localeCompare(b, "zh-CN"),
   );
+}
+
+function groupProhibitedFields(fields: string[]) {
+  const groups = [
+    {
+      title: "身份识别类",
+      items: fields.filter((field) =>
+        ["真实姓名", "手机号", "证件号", "诊疗卡号"].includes(field),
+      ),
+    },
+    {
+      title: "医疗原文类",
+      items: fields.filter((field) =>
+        ["medical_notes 原文", "诊疗过程", "医嘱", "病历检查报告"].includes(field),
+      ),
+    },
+    {
+      title: "支付与备注原文类",
+      items: fields.filter((field) =>
+        [
+          "raw_payment_note",
+          "客户备注原文",
+          "内部敏感备注",
+          "note_text",
+          "diagnosis",
+          "doctor_advice",
+          "report",
+          "payment raw text",
+        ].includes(field),
+      ),
+    },
+  ];
+  const grouped = new Set(groups.flatMap((group) => group.items));
+  const other = fields.filter((field) => !grouped.has(field));
+  return other.length > 0 ? [...groups, { title: "其他不可展示内容", items: other }] : groups;
 }
